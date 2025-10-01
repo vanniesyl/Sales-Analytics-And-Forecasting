@@ -22,9 +22,9 @@ if fl is not None:
     st.write(filename)
     df = pd.read_csv(fl, encoding="ISO-8859-1")
 else:
-    os.chdir(r"D:\Interactive-Dashboard-1\interactive_Dashboard")
+    os.chdir(r"D:\BA\Interactive-Dashboard-1\Interactive_Dashboard")
     df = pd.read_csv("Superstore.csv", encoding="ISO-8859-1")
-
+df["Order Date"] = pd.to_datetime(df["Order Date"], dayfirst=True, errors='coerce')
 # Check if the "Category" column exists in the DataFrame
 if "Category" in df.columns:
     category_col = "Category"
@@ -64,7 +64,8 @@ else:
     filtered_df = df[df["Region"].isin(region) & df["State"].isin(state) & df["City"].isin(city)]
 
 col1, col2 = st.columns((2))
-df["Order Date"] = pd.to_datetime(df["Order Date"], errors='coerce')
+
+
 
 # Getting the min and max date 
 startDate = pd.to_datetime(df["Order Date"]).min()
@@ -76,8 +77,7 @@ with col1:
 with col2:
     date2 = pd.to_datetime(st.date_input("End Date", endDate))
 
-df = df[(df["Order Date"] >= date1) & (df["Order Date"] <= date2)].copy()
-
+filtered_df = filtered_df[(filtered_df["Order Date"] >= date1) & (filtered_df["Order Date"] <= date2)].copy()
 st.sidebar.header("Choose your filter: ")
 
 category_df = filtered_df.groupby(by=[category_col], as_index=False)["Sales"].sum()
@@ -304,3 +304,4 @@ if 'linechart_combined' in locals():
 # Show predicted sales values in a table
 st.subheader('Predicted Sales for Future Dates')
 st.write(future_sales_df)
+
